@@ -4,15 +4,68 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>Product Maintenance</title>
 	<link rel="stylesheet" href="styles/main.css">
-	 
-      
-      <script type = "text/javascript" src = "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-      <script src="product.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script type="text/javascript">
+		window.onload = function () {
+		var maint =
+				new Vue({
+					el: '#productsdiv',
+					data: {
+										products: 			  [ {code: 'pr1', description:'Product 1', price: 1.99},
+																{code: 'pr2', description:'Product 2', price: 2.99},
+																{code: 'pr3', description:'Product 3', price: 3.99}]
+								}
+					})
+		$.get("productMaint").done(function (prods){
+			
+			
+			prods.forEach(function (product) {
+				console.log(product);
+				product.edit = "editProduct?productCode=" + product.code;
+			})
+			maint.products = prods;
+		});
+		$("body").click(".deleteProduct", function(event) {
+            event.preventDefault();
+            var row = event.target.closest("tr");
+            console.log(row);
+            var productText = row.textContent;
+            
+            var productTokens = productText.split(" ");
+            
+            var productCode = productTokens[0];
+            
+            console.log(productCode);
+            var confirmed = window.confirm("Are you sure you want to delete product?");
+            if (confirmed == false) {
+                return;
+            }
+            $.post( "deleteProduct", {
+                productCode: productCode
+            }
+            
+            
+            ); 
+            $.get("productMaint").done(function (prods){ // this is called again to refresh the prducts after delete.
+    			
+    			
+    			prods.forEach(function (product) {
+    				console.log(product);
+    				product.edit = "editProduct?productCode=" + product.code;
+    			})
+    			maint.products = prods;
+    		});
+            
+		
+		})}
+	</script>
 </head>
 <body>
 	<h1>Products</h1>
-	<div id="productjs">
+	
+	
+	<div id="productsdiv">
 	<table>
 		<tr>
 			<th style="width:75px">Code</th>
@@ -21,14 +74,13 @@
             <th></th>
             <th></th>
 		</tr>
-		<tr v-for="product in products" :productCode="entry.code">
-			<tr>
-				<td>{{entry.code}}</td>
-				<td>{{entry.description}}</td>
-				<td style="text-align:right">{{entry.price}}</td>
-				<td><a :href="product.edit">Edit</a></td>
-				<td><a href="#" class="deleteProduct">Delete</a></td>
-			</tr>
+		<tr v-for="(product, index) in products">
+				<td id="code" class="code">{{ product.code }}</td>
+				<td>{{ product.description }}</td>
+				<td style="text-align:right">{{ product.price }}</td>
+				<td><a href="product.edit">Edit</a></td>
+				<td><a href="deleteProduct">Delete</a></td>
+		</tr>
 	</table>
 	</div>
 	<form action="editProduct" method="get">

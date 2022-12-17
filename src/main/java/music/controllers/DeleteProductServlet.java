@@ -20,8 +20,8 @@ public class DeleteProductServlet extends HttpServlet {
 
         String code = req.getParameter("productCode");
         req.setAttribute("product", ProductIO.getProduct(code));
-
-        req.getRequestDispatcher("/WEB-INF/confirmDelete.jsp").forward(req, resp);
+        
+        req.getRequestDispatcher("/confirmDelete.jsp").forward(req, resp);
     }
 
     @Override

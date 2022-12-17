@@ -20,6 +20,8 @@
             <th style="width:75px;text-align:right">Price</th>
             <th></th>
         </tr>
+        
+        
 
         <c:forEach var="product" items="${products}">
             <tr>

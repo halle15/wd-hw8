@@ -1,18 +1,44 @@
 
 
 
+
+
+
+
+
  $(function () {
-         var maint = new Vue({
-              el: "#productjs",
-              data: {	products:[{}]}});
-              
-           $.get("productMaint").then(
-			function (products) {
-            products.forEach(function (product) {
+        var maint =
+				new Vue({
+					el: '#productjs',
+					data: {
+										products: 			  [ {code: 'pr1', description:'Product 1', price: 1.99},
+																{code: 'pr2', description:'Product 2', price: 2.99},
+																{code: 'pr3', description:'Product 3', price: 3.99}]
+								}
+					})
+		})
+            
+            $.get("productMaint").done(function (prods){
+	
+	
+				prods.forEach(function (product) {
+					console.log(product);
+					product.edit = "editProduct?productCode=" + product.code;
+				})
+				maint.prods = prods;
+} )
+            
+            
+            
+/*
+        $.get("http://localhost:8080/_lab3/productMaint").done(
+			function (prods) {
+            prods.forEach(function (product) {
                 product.edit = "editProduct?productCode=" + product.code;
             });
-			maint.products = products;
-        }),$("body").click(".deleteProduct", function(event) {
+			maint.prods = prods;
+        });
+        $("body").click(".deleteProduct", function(event) {
             event.preventDefault();
             var row = event.target.closest("tr");
             var productCode = row.attr("productCode");
@@ -23,7 +49,8 @@
             $.post( "deleteProduct", {
                 productCode: productCode
             })
-        })})
+        });*/
+    
               	/*	 
               		  
 
@@ -50,11 +77,11 @@
             
             /*
         $.get("productMaint").then(
-			function (products) {
-            products.forEach(function (product) {
+			function (prods) {
+            prods.forEach(function (product) {
                 product.edit = "editProduct?productCode=" + product.code;
             });
-			maint.products = products;
+			maint.prods = prods;
         });
         
         $("body").click(".deleteProduct", function(event) {

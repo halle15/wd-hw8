@@ -6,7 +6,54 @@
     <link href="styles/main.css" rel="stylesheet" />
     <script type = "text/javascript" src = "https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script type="text/javascript" src="cart.js"></script>
+    <script type="text/javascript">
+    window.onload = function () {
+    	    $(function () {
+    	         var cart = new Vue({
+    	          el: '#vuejs',
+    	         data: {
+    	            entries: []
+    	        },
+    	        computed: {
+    	            totalPrice: function () {
+    	                var total = 0;
+    	                this.entries.forEach(
+    	                    entry => total += entry.qty * entry.product.price);
+    	                return total;
+    	            }
+    	        }
+    	        })
+
+    	        $.get("cart")
+    	        .then(function (entries) {
+    	            cart.entries = entries;
+    	        });
+    	         $("body").click(".deleteProduct", function(event) {
+    	        	event.preventDefault();
+    	        	
+    	        	
+    	            var row = $(event.target).closest("tr");
+    	            var code = row.attr("productCode");
+    	            var qty = row.find(".qty").val();
+    	            
+    	            console.log(code);
+    	            console.log(qty);
+    	            
+					$.post( "cart", {
+	                	productCode: code,
+	               		qty: qty
+            			});
+    	            
+    	            $.get("cart").done(function (entries) {
+    	                cart.entries = entries;
+    	            });
+    	           	
+    	        });
+    	    });
+    	    
+    	};
+    
+    </script>
 </head>
 <body>
     <h1>Your Cart</h1>
@@ -21,8 +68,8 @@
         
         	<tr v-for="cartEntry in entries" :productCode="cartEntry.product.code">
             	<td>{{cartEntry.product.description}}</td>
-                <td align="right">{{cartEntry.product.priceCurrencyFormat}}</td>
-                <td><input type="text" size="3" class="qty" value="cartEntry.qty"></input></td>
+                <td align="right">{{cartEntry.product.price}}</td>
+                <td><input type="text" size="3" class="qty" :value="cartEntry.qty"></input></td>
                 <td>
                    <form class="updateQty">
                        <input type="submit" value="Update"></input>

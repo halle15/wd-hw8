@@ -19,7 +19,7 @@ public class SearchResultsServlet extends HttpServlet {
             HttpServletResponse resp) throws ServletException, IOException {
 
         req.setAttribute("products", ProductIO.getProducts());
-        req.getRequestDispatcher("/WEB-INF/searchResults.jsp").forward(req, resp);
+        req.getRequestDispatcher("searchResults.jsp").forward(req, resp);
     }
 
     @Override

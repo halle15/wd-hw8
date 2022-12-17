@@ -31,6 +31,9 @@ public class CartServlet extends HttpServlet {
 
         if (entries == null) {
             entries = new ArrayList<CartEntry>();
+            for(Product p : ProductIO.getProducts()) {
+            	entries.add(new CartEntry(p, 25)); // testing
+            }
             session.setAttribute("cart", entries);
         }
 
@@ -53,13 +56,14 @@ public class CartServlet extends HttpServlet {
             HttpServletResponse resp) throws ServletException, IOException {
 
         String code = req.getParameter("productCode");
+        int qty = Integer.parseInt(req.getParameter("qty"));
         Product product = ProductIO.getProduct(code);
 
         List<CartEntry> entries = getCartEntries(req);
         boolean alreadyInCart = false;
         for (CartEntry entry : entries) {
             if (entry.getProduct().getCode().equals(product.getCode())) {
-                entry.setQty(entry.getQty() + 1);
+                entry.setQty(qty);
                 alreadyInCart = true;
                 break;
             }
@@ -69,7 +73,7 @@ public class CartServlet extends HttpServlet {
             entries.add(new CartEntry(product, 1));
         }
 
-        resp.sendRedirect("cart");
+        
     }
 
 }
